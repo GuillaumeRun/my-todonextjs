@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import styles from './page.module.css';
-
-
+import styles from "./page.module.css";
 
 const App = () => {
   const [todos, setTodos] = useState([]);
@@ -15,7 +13,6 @@ const App = () => {
     const loadedTodos = JSON.parse(json);
     if (loadedTodos) {
       setTodos(loadedTodos);
-      
     }
   }, []);
 
@@ -58,51 +55,67 @@ const App = () => {
 
   return (
     <div id="todo-list" className={styles.todoList}>
-  <h1 className={styles.title}>Todo List</h1>
+      <h1 className={styles.title}>Zaffair pou fé</h1>
 
-  <form onSubmit={handleSubmit} className={styles.form}>
-    <input
-      type="text"
-      onChange={(e) => setTodo(e.target.value)}
-      value={todo}
-      className={styles.textInput}
-    />
-    <button type="submit" className={styles.btn}>Add Todo</button>
-  </form>
-  
-  {todos.map((todoItem) => (
-    <div key={todoItem.id} className={styles.todo}>
-      <div className={styles.todoText}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
-          type="checkbox"
-          id={`completed-${todoItem.id}`}
-          checked={todoItem.completed}
-          onChange={() => toggleComplete(todoItem.id)}
-          className={styles.checkboxInput}
+          type="text"
+          onChange={(e) => setTodo(e.target.value)}
+          value={todo}
+          className={styles.textInput}
         />
-        {todoItem.id === todoEditing ? (
-          <input
-            type="text"
-            onChange={(e) => setEditingText(e.target.value)}
-            value={editingText}
-            className={styles.textInput}
-          />
-        ) : (
-          <div>{todoItem.text}</div>
-        )}
-      </div>
-      <div className={styles.todoActions}>
-        {todoItem.id === todoEditing ? (
-          <button onClick={() => submitEdits(todoItem.id)} className={styles.btn}>Submit Edits</button>
-        ) : (
-          <button onClick={() => setTodoEditing(todoItem.id)} className={styles.btn}>Edit</button>
-        )}
-        <button onClick={() => deleteTodo(todoItem.id)} className={styles.btn}>Delete</button>
-      </div>
-    </div>
-  ))}
-</div>
+        <button type="submit" className={styles.btn}>
+          Add Todo
+        </button>
+      </form>
 
+      {todos.map((todoItem) => (
+        <div key={todoItem.id} className={styles.todo}>
+          <div className={styles.todoText}>
+            <input
+              type="checkbox"
+              id={`completed-${todoItem.id}`}
+              checked={todoItem.completed}
+              onChange={() => toggleComplete(todoItem.id)}
+              className={styles.checkboxInput}
+            />
+            {todoItem.id === todoEditing ? (
+              <input
+                type="text"
+                onChange={(e) => setEditingText(e.target.value)}
+                value={editingText}
+                className={styles.textInput}
+              />
+            ) : (
+              <div>{todoItem.text}</div>
+            )}
+          </div>
+          <div className={styles.todoActions}>
+            {todoItem.id === todoEditing ? (
+              <button
+                onClick={() => submitEdits(todoItem.id)}
+                className={styles.btn}
+              >
+                Submit Edits
+              </button>
+            ) : (
+              <button
+                onClick={() => setTodoEditing(todoItem.id)}
+                className={styles.btn}
+              >
+                Edit
+              </button>
+            )}
+            <button
+              onClick={() => deleteTodo(todoItem.id)}
+              className={styles.btn}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 
