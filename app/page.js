@@ -1,95 +1,109 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import React, { useState, useEffect } from "react";
+import styles from './page.module.css';
 
-export default function Home() {
+
+
+const App = () => {
+  const [todos, setTodos] = useState([]);
+  const [todo, setTodo] = useState("");
+  const [todoEditing, setTodoEditing] = useState(null);
+  const [editingText, setEditingText] = useState("");
+
+  useEffect(() => {
+    const json = localStorage.getItem("todos");
+    const loadedTodos = JSON.parse(json);
+    if (loadedTodos) {
+      setTodos(loadedTodos);
+      
+    }
+  }, []);
+
+  useEffect(() => {
+    const json = JSON.stringify(todos);
+    localStorage.setItem("todos", json);
+  }, [todos]);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const newTodo = {
+      id: new Date().getTime(),
+      text: todo,
+      completed: false,
+    };
+    setTodos([...todos, newTodo]);
+    setTodo("");
+  }
+
+  function deleteTodo(id) {
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
+  }
+
+  function toggleComplete(id) {
+    const updatedTodos = todos.map((todo) =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updatedTodos);
+  }
+
+  function submitEdits(id) {
+    const updatedTodos = todos.map((todo) =>
+      todo.id === id ? { ...todo, text: editingText } : todo
+    );
+    setTodos(updatedTodos);
+    setTodoEditing(null);
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div id="todo-list" className={styles.todoList}>
+  <h1 className={styles.title}>Todo List</h1>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+  <form onSubmit={handleSubmit} className={styles.form}>
+    <input
+      type="text"
+      onChange={(e) => setTodo(e.target.value)}
+      value={todo}
+      className={styles.textInput}
+    />
+    <button type="submit" className={styles.btn}>Add Todo</button>
+  </form>
+  
+  {todos.map((todoItem) => (
+    <div key={todoItem.id} className={styles.todo}>
+      <div className={styles.todoText}>
+        <input
+          type="checkbox"
+          id={`completed-${todoItem.id}`}
+          checked={todoItem.completed}
+          onChange={() => toggleComplete(todoItem.id)}
+          className={styles.checkboxInput}
         />
+        {todoItem.id === todoEditing ? (
+          <input
+            type="text"
+            onChange={(e) => setEditingText(e.target.value)}
+            value={editingText}
+            className={styles.textInput}
+          />
+        ) : (
+          <div>{todoItem.text}</div>
+        )}
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className={styles.todoActions}>
+        {todoItem.id === todoEditing ? (
+          <button onClick={() => submitEdits(todoItem.id)} className={styles.btn}>Submit Edits</button>
+        ) : (
+          <button onClick={() => setTodoEditing(todoItem.id)} className={styles.btn}>Edit</button>
+        )}
+        <button onClick={() => deleteTodo(todoItem.id)} className={styles.btn}>Delete</button>
       </div>
-    </main>
-  )
-}
+    </div>
+  ))}
+</div>
+
+  );
+};
+
+export default App;
