@@ -14,6 +14,30 @@
   margin-bottom: 10px;
 }
 
+@media screen and (max-width: 768px) {
+  .todoList {
+    width: 90%;
+    margin: 5;
+  }
+
+  .form {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+
+  .textInput {
+    padding: 4px 8px;
+    width: 100%;
+  }
+
+  .btn {
+    font-size: 14px;
+    padding: 4px 8px;
+    width: auto;
+    margin: 10px auto;
+  }
+}
+
 .form {
   display: flex;
   justify-content: space-between;
